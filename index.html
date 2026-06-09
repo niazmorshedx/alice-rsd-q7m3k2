@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>MyAlice — Release Status</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f7f6f3; --card: #ffffff; --border: #e6e3dc; --text: #1f1f1f;
+  --muted: #5f5e5a; --subtle: #9a9892; --track: #efede8; --accent: #c15f3c;
+  --green: #1a7f5a; --green-bg: #e3f2ec; --green-tx: #115c40;
+  --amber: #b45309; --amber-bg: #fdf0dc; --amber-tx: #8a4a06;
+  --red: #c8442c; --red-bg: #fae7e2; --red-tx: #9c3015;
+  --chip: #f1efe9;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16150f; --card: #201f17; --border: #38362c; --text: #eae8e2;
+    --muted: #b5b3ab; --subtle: #7d7b73; --track: #2c2b22; --accent: #d97757;
+    --green: #3dbd8d; --green-bg: #1d3a2f; --green-tx: #7fdcb6;
+    --amber: #e8a33d; --amber-bg: #3c2f17; --amber-tx: #f0c581;
+    --red: #e5684a; --red-bg: #42201a; --red-tx: #f0a08c;
+    --chip: #2c2b22;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.5; padding: 24px 20px 40px; }
+.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 18px; }
+.topbar { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.topbar h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+.topbar h1 span { color: var(--accent); }
+.topbar .meta { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+.hero { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.hero .cell { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+.hero .cell .k { font-size: 11px; font-weight: 650; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+.hero .cell .v { font-size: 28px; font-weight: 750; line-height: 1.2; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.hero .cell .s { font-size: 12px; color: var(--subtle); margin-top: 2px; }
+.section-h { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; margin-top: 6px; }
+.rel-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; display: grid; gap: 12px; }
+.rel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.rel-head .name { font-size: 18px; font-weight: 700; }
+.rel-head .desc { font-size: 13px; color: var(--muted); margin-top: 3px; max-width: 640px; }
+.badge { font-size: 12px; font-weight: 700; padding: 5px 13px; border-radius: 999px; white-space: nowrap; }
+.badge.missed, .badge.failing { background: var(--red-bg); color: var(--red-tx); }
+.badge.at_risk { background: var(--amber-bg); color: var(--amber-tx); }
+.badge.on_track { background: var(--green-bg); color: var(--green-tx); }
+.badge.not_started { background: var(--chip); color: var(--muted); }
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.fact { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 13px; }
+.fact .k { font-size: 10.5px; font-weight: 650; color: var(--subtle); text-transform: uppercase; letter-spacing: 0.5px; }
+.fact .v { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 1px; }
+.fact .v.red { color: var(--red); } .fact .v.amber { color: var(--amber); } .fact .v.green { color: var(--green); }
+.fact .s { font-size: 11px; color: var(--subtle); }
+.bar { background: var(--track); height: 9px; border-radius: 5px; overflow: hidden; }
+.bar .fill { height: 100%; border-radius: 5px; transition: width .5s ease; }
+.bar-row { display: grid; grid-template-columns: 1fr 52px; gap: 10px; align-items: center; }
+.bar-row .pct { font-size: 12.5px; font-weight: 700; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.rel-foot { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tag { font-size: 11.5px; padding: 3px 10px; border-radius: 9px; background: var(--chip); color: var(--muted); font-weight: 550; }
+.tag.warn { background: var(--amber-bg); color: var(--amber-tx); }
+.tag.bad { background: var(--red-bg); color: var(--red-tx); }
+.reason { font-size: 13px; color: var(--muted); border-left: 3px solid var(--border); padding: 2px 0 2px 12px; }
+table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+th, td { text-align: left; padding: 10px 14px; font-size: 13.5px; border-bottom: 1px solid var(--border); }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); background: var(--bg); font-weight: 650; }
+tr:last-child td { border-bottom: none; }
+td .cellchip { font-size: 11.5px; font-weight: 650; padding: 2px 10px; border-radius: 9px; display: inline-block; }
+.c-done { background: var(--green-bg); color: var(--green-tx); }
+.c-pending { background: var(--amber-bg); color: var(--amber-tx); }
+.c-urgent { background: var(--red-bg); color: var(--red-tx); }
+.c-active { background: var(--green-bg); color: var(--green-tx); }
+.c-na { color: var(--subtle); }
+.shipped { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.ship { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 13px 16px; }
+.ship .n { font-weight: 650; font-size: 14px; }
+.ship .d { font-size: 12px; color: var(--subtle); margin-top: 2px; }
+.ship .r { font-size: 12px; color: var(--green-tx); background: var(--green-bg); display: inline-block; padding: 2px 10px; border-radius: 9px; margin-top: 7px; font-weight: 600; }
+.foot { font-size: 12px; color: var(--subtle); border-top: 1px solid var(--border); padding-top: 14px; line-height: 1.6; }
+.err { background: var(--red-bg); color: var(--red-tx); border-radius: 12px; padding: 14px 18px; font-weight: 600; display: none; }
+@media (max-width: 760px) { .hero, .facts { grid-template-columns: 1fr 1fr; } .shipped { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <h1>MyAlice — <span>Release Status</span></h1>
+      <div class="meta">Single source of truth for upcoming releases · refreshed by Product · last updated <strong id="updatedAt">…</strong></div>
+    </div>
+    <div class="meta" id="gateMeta"></div>
+  </div>
+  <div class="err" id="loadErr">Could not load release data — check back shortly.</div>
+  <div class="hero" id="hero"></div>
+  <div class="section-h">Upcoming Releases</div>
+  <div id="cards" style="display:grid;gap:14px;"></div>
+  <div class="section-h">GTM &amp; CS Readiness — will you get what you need on time?</div>
+  <div style="overflow-x:auto;"><table id="gtmTable"><thead><tr><th>Feature</th><th>Release Docs</th><th>GTM Briefing</th><th>Phased Rollout</th><th>Global Release</th></tr></thead><tbody></tbody></table></div>
+  <div class="section-h">Recently Shipped</div>
+  <div class="shipped" id="shipped"></div>
+  <div class="foot" id="methodology"></div>
+</div>
+<script>
+function dayDiff(dateStr) {
+  var d = new Date(dateStr + "T00:00:00");
+  var now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((d.getTime() - now.getTime()) / 86400000);
+}
+function fmtDate(s) {
+  var d = new Date(s + "T00:00:00");
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+function render(DATA) {
+  document.getElementById("updatedAt").textContent = DATA.generated_at;
+  var staleDays = -dayDiff(DATA.generated_at);
+  if (staleDays > 3) document.getElementById("updatedAt").textContent = DATA.generated_at + " (" + staleDays + "d ago)";
+
+  var gateIn = dayDiff(DATA.next_gate.date);
+  document.getElementById("gateMeta").innerHTML = "Next QA gate: <strong>" + fmtDate(DATA.next_gate.date) + "</strong> (" + DATA.next_gate.label + ") — " + (gateIn >= 0 ? "in " + gateIn + " day" + (gateIn === 1 ? "" : "s") : "passed");
+
+  var up = DATA.releases_upcoming;
+  var missed = up.filter(function(r){ return r.risk === "missed" || r.risk === "failing"; }).length;
+  var atRisk = up.filter(function(r){ return r.risk === "at_risk"; }).length;
+  var onTrack = up.filter(function(r){ return r.risk === "on_track"; }).length;
+  var urgentDocs = DATA.gtm_readiness.filter(function(g){ return g.docs === "urgent"; }).length;
+  var heroHtml = "";
+  heroHtml += '<div class="cell"><div class="k">Next QA gate</div><div class="v">' + fmtDate(DATA.next_gate.date) + '</div><div class="s">' + (gateIn >= 0 ? "T−" + gateIn + " days · " : "") + esc(DATA.next_gate.label) + "</div></div>";
+  heroHtml += '<div class="cell"><div class="k">Upcoming releases</div><div class="v">' + up.length + '</div><div class="s">' + missed + " missed · " + atRisk + " at risk · " + onTrack + " on track</div></div>";
+  heroHtml += '<div class="cell"><div class="k">GTM / CS attention</div><div class="v">' + urgentDocs + '</div><div class="s">release docs urgently pending</div></div>';
+  document.getElementById("hero").innerHTML = heroHtml;
+
+  var cards = "";
+  up.forEach(function(r) {
+    var dd = dayDiff(r.release_date);
+    var dateLine, dateClass;
+    if (dd < 0) { dateLine = Math.abs(dd) + "d past date"; dateClass = "red"; }
+    else if (dd <= 4) { dateLine = "in " + dd + " day" + (dd === 1 ? "" : "s"); dateClass = "amber"; }
+    else { dateLine = "in " + dd + " days"; dateClass = "green"; }
+    var conf = r.confidence === null || r.confidence === undefined ? "—" : r.confidence + "%";
+    var confClass = r.confidence === null || r.confidence === undefined ? "" : (r.confidence >= 75 ? "green" : (r.confidence >= 50 ? "amber" : "red"));
+    var confSub = r.confidence === null || r.confidence === undefined ? "new date pending" : (r.confidence >= 75 ? "likely on time" : (r.confidence >= 50 ? "watch closely" : "likely late"));
+    var fillColor = r.completion_pct >= 85 ? "var(--green)" : (r.completion_pct >= 55 ? "var(--amber)" : "var(--red)");
+    var slipTags = "";
+    if (r.slippage && r.slippage.postponements > 0) {
+      slipTags = '<span class="tag ' + (r.slippage.postponements >= 2 ? "bad" : "warn") + '">' + r.slippage.postponements + "× postponed · +" + r.slippage.slip_days + "d total</span>" +
+                 '<span class="tag">' + esc(r.slippage.log) + "</span>";
+    } else {
+      slipTags = '<span class="tag">no postponements</span>';
+    }
+    cards +=
+      '<div class="rel-card">' +
+        '<div class="rel-head"><div><div class="name">' + esc(r.name) + '</div><div class="desc">' + esc(r.summary) + '</div></div>' +
+        '<span class="badge ' + r.risk + '">' + esc(r.risk_label) + "</span></div>" +
+        '<div class="facts">' +
+          '<div class="fact"><div class="k">Target date</div><div class="v ' + dateClass + '">' + fmtDate(r.release_date) + '</div><div class="s">' + dateLine + "</div></div>" +
+          '<div class="fact"><div class="k">On-time confidence</div><div class="v ' + confClass + '">' + conf + '</div><div class="s">' + confSub + "</div></div>" +
+          '<div class="fact"><div class="k">Scope complete</div><div class="v">' + r.completion_pct + '%</div><div class="s">' + r.progress.shipped + " of " + r.progress.total + " items shipped</div></div>" +
+          '<div class="fact"><div class="k">Owner</div><div class="v" style="font-size:14px;">' + esc(r.owner) + '</div><div class="s">engineering lead</div></div>' +
+        "</div>" +
+        '<div class="bar-row"><div class="bar"><div class="fill" style="width:' + r.completion_pct + '%;background:' + fillColor + ';"></div></div><div class="pct">' + r.completion_pct + "%</div></div>" +
+        '<div class="reason"><strong>Why:</strong> ' + esc(r.reason) + "<br><strong>Open:</strong> " + esc(r.open_items) + "</div>" +
+        '<div class="rel-foot">' + slipTags + "</div>" +
+      "</div>";
+  });
+  document.getElementById("cards").innerHTML = cards;
+
+  var chipMap = { done: ["c-done", "✓ done"], pending: ["c-pending", "pending"], urgent: ["c-urgent", "needed now"], active: ["c-active", "in progress"], "n/a": ["c-na", "—"] };
+  var rows = "";
+  DATA.gtm_readiness.forEach(function(g) {
+    function cell(v) { var m = chipMap[v] || chipMap["n/a"]; return m[0] === "c-na" ? '<span class="c-na">—</span>' : '<span class="cellchip ' + m[0] + '">' + m[1] + "</span>"; }
+    rows += "<tr><td><strong>" + esc(g.feature) + "</strong></td><td>" + cell(g.docs) + "</td><td>" + cell(g.gtm) + "</td><td>" + cell(g.rollout) + "</td><td>" + cell(g.global) + "</td></tr>";
+  });
+  document.querySelector("#gtmTable tbody").innerHTML = rows;
+
+  var ship = "";
+  DATA.released_recent.forEach(function(s) {
+    ship += '<div class="ship"><div class="n">' + esc(s.name) + '</div><div class="d">Released ' + fmtDate(s.release_date) + " · " + esc(s.note) + '</div><div class="r">' + esc(s.rollout) + "</div></div>";
+  });
+  document.getElementById("shipped").innerHTML = ship;
+
+  document.getElementById("methodology").innerHTML = "<strong>How to read this:</strong> " + esc(DATA.methodology) + " · This page is internal to MyAlice — please do not share the URL outside the company.";
+}
+
+function load() {
+  fetch("data.json?v=" + Date.now())
+    .then(function(r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function(d) { document.getElementById("loadErr").style.display = "none"; render(d); })
+    .catch(function() { document.getElementById("loadErr").style.display = "block"; });
+}
+load();
+setInterval(load, 300000);
+</script>
+</body>
+</html>

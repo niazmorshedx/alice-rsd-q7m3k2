@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-06-10",
+  "next_gate": { "label": "Pre-release Weekly (QA gate)", "date": "2026-06-14" },
+  "releases_upcoming": [
+    {
+      "name": "Billing v3",
+      "version_id": "10001",
+      "release_date": "2026-06-08",
+      "owner": "Raphael (Lead EM)",
+      "risk": "missed",
+      "risk_label": "MISSED — new date pending",
+      "confidence": null,
+      "completion_pct": 92,
+      "progress": { "total": 45, "shipped": 40, "in_qa": 1, "code_review": 1, "in_progress": 2, "todo": 1 },
+      "open_items": "1 in QA (QA Required) · 1 in code review · 2 in progress · 1 to do",
+      "slippage": { "original": "2026-04-19", "postponements": 2, "slip_days": 50, "log": "Apr 19 → May 11 → Jun 8" },
+      "reason": "Jun 8 date passed with the version unreleased in Jira — bulk of scope (40/45 items) is shipped; remaining items and the new target date need confirmation.",
+      "summary": "Rebuilt billing across Core and Raven — credit-based plans, auto top-up, and unified billing for AI agent usage."
+    },
+    {
+      "name": "RBAC Direct URL Navigation",
+      "version_id": "10621",
+      "release_date": "2026-06-08",
+      "owner": "James (EM 1)",
+      "risk": "missed",
+      "risk_label": "MISSED — QA failure open",
+      "confidence": null,
+      "completion_pct": 55,
+      "progress": { "total": 2, "shipped": 0, "in_qa": 1, "code_review": 0, "in_progress": 1, "todo": 0 },
+      "open_items": "1 story QA Failed (in progress) · 1 story Ready for Production",
+      "slippage": { "original": "2026-04-19", "postponements": 2, "slip_days": 50, "log": "Apr 19 → May 11 → Jun 8" },
+      "reason": "Jun 8 date passed; one of two stories has an open QA failure being reworked. Release has historically been coupled to Billing v3.",
+      "summary": "Role-based access control for direct URL navigation — users hitting a URL they lack permissions for are gated correctly instead of seeing broken screens."
+    },
+    {
+      "name": "Inbox Conversations v2",
+      "version_id": "10992",
+      "release_date": "2026-06-15",
+      "owner": "Amor (Senior Engineer)",
+      "risk": "at_risk",
+      "risk_label": "AT RISK — likely to slip",
+      "confidence": 30,
+      "completion_pct": 40,
+      "progress": { "total": 2, "shipped": 0, "in_qa": 0, "code_review": 2, "in_progress": 0, "todo": 0 },
+      "open_items": "2 items in code review — not yet staged, QA not started",
+      "slippage": { "original": "2026-05-18", "postponements": 1, "slip_days": 28, "log": "May 18 → Jun 15" },
+      "reason": "Both work items still in code review 4 days before the Sun Jun 14 QA gate — needs review, staging, and a clean QA pass with no findings to make Jun 15.",
+      "summary": "Redesigned conversations view in the Inbox — faster load, cleaner threading, and improved agent ergonomics for high-volume teams."
+    }
+  ],
+  "released_recent": [
+    { "name": "Raven AI Performance Reports", "release_date": "2026-05-18", "rollout": "Phased rollout in progress", "note": "16 of 18 items in pre-release cohorts" },
+    { "name": "Raven AI Agent Ecommerce P1", "release_date": "2026-05-20", "rollout": "Phased rollout in progress", "note": "27 of 39 items in pre-release cohorts" },
+    { "name": "Meta Fund: WhatsApp Username as BSUID", "release_date": "2026-05-20", "rollout": "Phased rollout in progress", "note": "Meta-dependent — pre-release until globally available" },
+    { "name": "Meta Fund: Partner-led Business Verification", "release_date": "2026-05-20", "rollout": "Phased rollout in progress", "note": "Meta-dependent — pre-release until globally available" }
+  ],
+  "gtm_readiness": [
+    { "feature": "Billing v3",                  "docs": "urgent",  "gtm": "done",    "rollout": "n/a",     "global": "pending" },
+    { "feature": "RBAC Direct URL Navigation",  "docs": "urgent",  "gtm": "done",    "rollout": "n/a",     "global": "pending" },
+    { "feature": "Raven AI Performance Reports","docs": "urgent",  "gtm": "pending", "rollout": "n/a",     "global": "pending" },
+    { "feature": "Draft Message Retention",     "docs": "urgent",  "gtm": "done",    "rollout": "n/a",     "global": "pending" },
+    { "feature": "Inbox Conversations v2",      "docs": "pending", "gtm": "done",    "rollout": "pending", "global": "n/a" },
+    { "feature": "WhatsApp Username (BSUID)",   "docs": "pending", "gtm": "done",    "rollout": "active",  "global": "n/a" },
+    { "feature": "Meta Partner-led Bus. Verif.","docs": "pending", "gtm": "done",    "rollout": "active",  "global": "n/a" },
+    { "feature": "AI Agent Ecommerce",          "docs": "pending", "gtm": "done",    "rollout": "active",  "global": "n/a" },
+    { "feature": "AI Agent Inactivity v2",      "docs": "pending", "gtm": "done",    "rollout": "n/a",     "global": "n/a" },
+    { "feature": "DM AI Agent Typing Indicator","docs": "pending", "gtm": "done",    "rollout": "n/a",     "global": "n/a" },
+    { "feature": "TikTok Channel Integration",  "docs": "done",    "gtm": "pending", "rollout": "n/a",     "global": "n/a" }
+  ],
+  "methodology": "Risk and confidence are computed from Jira QA gates: weighted completion across work items (Released 1.0, Pre-release 0.95, QA-passed 0.85, in QA 0.6, code review 0.4, in progress 0.25, to do 0), minus penalties for past postponements and unstaged work close to the Sunday QA gate. A release must be QA-passed on staging before the Pre-release Weekly call to ship that cycle."
+}
